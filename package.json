@@ -18,6 +18,8 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
     "validator": "^7.0.0"
   }
 }

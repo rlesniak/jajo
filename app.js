@@ -6,6 +6,11 @@ const passportLocal = require('passport-local');
 
 const mongoose = require('mongoose');
 
+/* Middlewares */
+
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
 const config = require('./config');
 const router = require('./routes');
 
@@ -48,6 +53,23 @@ function configurePassport() {
   app.use(passport.session());
 }
 
+/**
+ * Setup application middleware.
+ * @method setupMiddleware
+ * @returns {void}
+ */
+function setupMiddleware() {
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(cookieParser());
+
+  app.use(session({
+    secret: config.secret,
+    resave: true,
+    saveUninitialized: false,
+  }));
+}
+
 const app = express();
 app.use(session({
   secret: config.secret,
@@ -59,6 +81,7 @@ app.use(session({
 
 configurePassport();
 initMongoConnection();
+setupMiddleware();
 
 app.use('/', router);
 

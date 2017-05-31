@@ -26,6 +26,13 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+    photo: {
+      type: String,
+    },
+    tags: {
+      type: Array,
+      default: [],
+    },
     createdAt: {
       type: Date,
       default: Date.now

@@ -4,7 +4,7 @@ const passport = require('passport');
 const sessionHandlers = require('./handlers/session');
 
 const UserModel = require('./models/User');
-
+const RecsController = require('./controllers/Recs');
 
 const router = express.Router();
 
@@ -30,8 +30,8 @@ const isLoggedIn = (req, res, next) => {
 * @route session
 */
 router.get('/session', isLoggedIn, (req, res) => {
-  const { username, email, _id} = req.user;
-  res.json({ _id, username, email });
+  const { username, email, _id, tags } = req.user;
+  res.json({ _id, username, email, tags });
 });
 
 router.delete('/session', (req, res) => {
@@ -75,5 +75,22 @@ router.post('/register', async (req, res) => {
   }
 });
 
+router.put('/me', isLoggedIn, async (req, res) => {
+  const { tags } = req.body;
+  const { _id } = req.user;
+
+  try {
+    UserModel.findOneAndUpdate({ _id }, {
+      $set: { tags }
+    }, { new: true }, (err, event) => {
+
+      res.json(event);
+    });
+  } catch (err) {
+    res.status(422);
+  };
+});
+
+router.get('/recs', isLoggedIn, RecsController.get);
 
 module.exports = router;
